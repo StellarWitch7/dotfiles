@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+picom -cbf --config ~/.config/picom/picom.conf
+
+# Get the name of the connected HDMI output
+HDMI_OUTPUT=$(xrandr | grep "HDMI")
+HDMI_CONNECTED=$(echo $HDMI_OUTPUT | grep "connected")
+HDMI_OUTPUT=$(echo $HDMI_OUTPUT | cut -d ' ' -f 1)
+
+# Check if HDMI is connected
+if [ -n "$HDMI_CONNECTED" ]; then
+    # Enable HDMI and disable laptop monitor (eDP-1)
+    xrandr --output $HDMI_OUTPUT --auto --primary --output eDP-1 --off
+else
+    # Enable laptop monitor (eDP-1) and disable HDMI
+    xrandr --output eDP-1 --auto --primary --output $HDMI_OUTPUT --off
+fi
+
+dunst &
+flameshot &
+nm-applet &
+sirikali &
+qbittorrent &
+openrgb &
+blueman-applet &
+sound-switcher-indicator &
+
+flatpak run com.valvesoftware.Steam &
+rclone mount AuraGDrive: /home/aurora/CloudData/AuraGDrive &
